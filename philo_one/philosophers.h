@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 16:39:40 by sdunckel          #+#    #+#             */
-/*   Updated: 2019/12/22 13:20:46 by sdunckel         ###   ########.fr       */
+/*   Updated: 2019/12/22 21:07:41 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,9 @@
 typedef struct	s_philo
 {
 	int 				pos;
-	int					left;
-	int					right;
 	time_t				time;
 	int					eat_amount;
-	pthread_mutex_t		sleep;
+	pthread_mutex_t		mutex;
 	struct	s_options	*options;
 }				t_philo;
 
@@ -54,8 +52,6 @@ void		ft_putstr(char *s);
 
 // ACTIONS
 void 		take_sticks(t_philo *philo);
-void 		start_eating(t_philo *philo);
-void 		start_sleep(t_philo *philo);
 void		death(t_philo *philo);
 void 		rules(t_philo *philo);
 // UTILS
