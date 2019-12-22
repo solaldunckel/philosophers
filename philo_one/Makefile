@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/07 12:02:19 by sdunckel          #+#    #+#              #
-#    Updated: 2019/12/21 13:38:54 by sdunckel         ###   ########.fr        #
+#    Updated: 2019/12/22 13:18:55 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ SRCS_LIST		= \
 					main.c \
 					ft.c \
 					utils.c \
-					actions.c
+					actions.c \
+					clear.c
 
 OBJS			= ${SRCS_LIST:.c=.o}
 

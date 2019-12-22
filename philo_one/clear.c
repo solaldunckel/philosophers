@@ -1,36 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   clear.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/21 03:11:01 by sdunckel          #+#    #+#             */
-/*   Updated: 2019/12/22 13:10:13 by sdunckel         ###   ########.fr       */
+/*   Created: 2019/12/22 13:18:35 by sdunckel          #+#    #+#             */
+/*   Updated: 2019/12/22 13:18:49 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-time_t	get_time()
+void	destroy_mutex(t_options *options)
 {
-	struct timeval	tv;
+	int		i;
 
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
-
-void 	state_msg(t_philo *philo, char *str)
-{
-	time_t	time;
-
-	time = get_time();
-	pthread_mutex_lock(&philo->options->write);
-	ft_putnbr(time - philo->options->start);
-	write(1, " ", 1);
-	ft_putnbr(philo->pos + 1);
-	write(1, " ", 1);
-	ft_putstr(str);
-	write(1, "\n", 1);
-	pthread_mutex_unlock(&philo->options->write);
+	i = 0;
+	pthread_mutex_destroy(&options->write);
+	pthread_mutex_destroy(&options->mutex);
+	while (i < options->num)
+	{
+		pthread_mutex_destroy(&options->sticks[i]);
+		pthread_mutex_destroy(&options->philos[i].sleep);
+		i++;
+	}
+	free(options->sticks);
+	if (options->philos)
+	 	free(options->philos);
 }
