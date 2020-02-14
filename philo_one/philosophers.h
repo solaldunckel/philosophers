@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 16:39:40 by sdunckel          #+#    #+#             */
-/*   Updated: 2019/12/22 21:07:41 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/02/14 18:09:08 by tomsize          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,23 @@ typedef struct	s_options
 	t_philo				*philos;
 }				t_options;
 
+/*
+** UTILS
+*/
+
 size_t		ft_strlen(const char *s);
 int			ft_atoi(const char *nptr);
 void		ft_putnbr(int n);
 void		ft_putstr(char *s);
-
-// ACTIONS
-void 		take_sticks(t_philo *philo);
-void		death(t_philo *philo);
-void 		rules(t_philo *philo);
-// UTILS
 time_t		get_time();
 void 		state_msg(t_philo *philo, char *str);
 void		destroy_mutex(t_options *options);
+
+/*
+** ACTIONS
+*/
+void 		take_sticks(t_philo *philo);
+void		death(t_philo *philo);
+void 		rules(t_philo *philo);
 
 #endif

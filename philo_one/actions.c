@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:28:16 by sdunckel          #+#    #+#             */
-/*   Updated: 2019/12/22 21:06:03 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/02/14 20:29:49 by tomsize          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,15 @@ void	death(t_philo *philo)
 			pthread_mutex_unlock(&philo->options->mutex);
 			return ;
 		}
-		pthread_mutex_unlock(&philo->mutex);
-	}
-}
-
-void	eat_count(t_philo *philo)
-{
-	while (1)
-	{
-		pthread_mutex_lock(&philo->mutex);
 		if (philo->eat_amount == philo->options->max_eat)
 		{
 			philo->options->total++;
+			philo->eat_amount++;
+		}
+		if (philo->options->total == philo->options->num)
+		{
+			pthread_mutex_lock(&philo->options->write);
+			pthread_mutex_unlock(&philo->options->mutex);
 			return ;
 		}
 		pthread_mutex_unlock(&philo->mutex);

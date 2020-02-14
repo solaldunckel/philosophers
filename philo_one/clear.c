@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/22 13:18:35 by sdunckel          #+#    #+#             */
-/*   Updated: 2019/12/22 18:19:09 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/02/14 18:43:56 by tomsize          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ void	destroy_mutex(t_options *options)
 		i++;
 	}
 	free(options->sticks);
-	if (options->philos)
-	 	free(options->philos);
+	free(options->philos);
 	pthread_mutex_destroy(&options->write);
 	pthread_mutex_destroy(&options->mutex);
 }
