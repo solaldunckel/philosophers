@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 16:38:57 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/02/14 18:47:44 by tomsize          ###   ########.fr       */
+/*   Updated: 2020/02/15 17:02:22 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ int		parse_options(t_options *options, int argc, char **argv)
 		options->max_eat = ft_atoi(argv[5]);
 	else
 		options->max_eat = 0;
-	if (!(options->sticks = calloc(1, sizeof(pthread_mutex_t*) * options->num)))
+	if (!(options->sticks = calloc(1, sizeof(pthread_mutex_t) * options->num)))
 		return (0);
-	if (!(options->philos = calloc(1, sizeof(t_philo*) * options->num)))
+	if (!(options->philos = calloc(1, sizeof(t_philo) * options->num)))
 		return (0);
 	printf("num : %d / ttd : %d / tte : %d / tts : %d / max : %d\n", options->num, options->time_to_die, options->time_to_eat, options->time_to_sleep, options->max_eat);
 	create_philos(options);

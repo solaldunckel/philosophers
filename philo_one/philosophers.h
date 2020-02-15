@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 16:39:40 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/02/14 18:09:08 by tomsize          ###   ########.fr       */
+/*   Updated: 2020/02/15 16:50:06 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 typedef struct	s_philo
 {
-	int 				pos;
+	int					pos;
 	time_t				time;
 	int					eat_amount;
 	pthread_mutex_t		mutex;
@@ -49,19 +49,19 @@ typedef struct	s_options
 ** UTILS
 */
 
-size_t		ft_strlen(const char *s);
-int			ft_atoi(const char *nptr);
-void		ft_putnbr(int n);
-void		ft_putstr(char *s);
-time_t		get_time();
-void 		state_msg(t_philo *philo, char *str);
-void		destroy_mutex(t_options *options);
+size_t			ft_strlen(const char *s);
+int				ft_atoi(const char *nptr);
+void			ft_putnbr(int n);
+void			ft_putstr(char *s);
+time_t			get_time();
+void 			state_msg(t_philo *philo, char *str);
+void			destroy_mutex(t_options *options);
 
 /*
 ** ACTIONS
 */
-void 		take_sticks(t_philo *philo);
-void		death(t_philo *philo);
-void 		rules(t_philo *philo);
+void 			take_sticks(t_philo *philo);
+void			death(t_philo *philo);
+void 			rules(t_philo *philo);
 
 #endif
