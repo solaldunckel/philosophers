@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:28:16 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/02/14 20:29:49 by tomsize          ###   ########.fr       */
+/*   Updated: 2020/02/24 19:01:50 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	start_eat(t_philo *philo)
 	philo->time = get_time();
 	state_msg(philo, "is eating");
 	usleep(philo->options->time_to_eat * 1000);
-	philo->eat_amount++;
+	philo->eat_count++;
 }
 
 void	drop_forks(t_philo *philo)
