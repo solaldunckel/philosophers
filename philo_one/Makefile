@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/10/07 12:02:19 by sdunckel          #+#    #+#              #
-#    Updated: 2020/02/15 16:59:02 by sdunckel         ###   ########.fr        #
+#    Created: 2020/02/24 12:46:01 by sdunckel          #+#    #+#              #
+#    Updated: 2020/02/25 19:14:27 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,15 +14,15 @@ NAME			= philo_one
 
 SRCS_LIST		= \
 					main.c \
-					ft.c \
+					routine.c \
 					utils.c \
-					actions.c \
-					clear.c
+					parsing.c \
+					print_utils.c
 
 OBJS			= ${SRCS_LIST:.c=.o}
 
 CC				= gcc
-CFLAGS 			= -Wall -Wextra -Werror
+CFLAGS 			= # -Wall -Wextra -Werror
 RM				= rm -f
 
 all:			$(NAME)

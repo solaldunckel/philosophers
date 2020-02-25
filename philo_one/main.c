@@ -5,83 +5,104 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/28 16:38:57 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/02/15 17:02:22 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/02/25 19:18:13 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int		start_multithread(t_options *options)
+int		start_threads(t_options *options, t_param *param)
 {
-	int			i;
+	t_philo		*philo;
 	pthread_t	thr;
+	int			i;
+	time_t		time;
 
 	i = 0;
-	options->start = get_time();
-	while (i < options->num)
+	time = get_time();
+	options->start_time = time;
+	while (i < param->philo_num)
 	{
-		if (pthread_create(&thr, NULL, (void*)rules, &options->philos[i]))
+		philo = &options->philos[i];
+		philo->last_eat = time;
+		if (pthread_create(&thr, NULL, (void*)philo_routine, philo))
 			return (0);
-		usleep(100);
+		usleep(10);
+		philo->thr = &thr;
 		i++;
 	}
-	pthread_mutex_lock(&options->mutex);
-	pthread_mutex_lock(&options->mutex);
-	pthread_mutex_unlock(&options->mutex);
 	return (1);
 }
 
-void 	create_philos(t_options *options)
+void	destroy_all(t_options *options, t_param *param)
 {
 	int		i;
 
 	i = 0;
-	while (i < options->num)
+	while (i < param->philo_num)
 	{
-		options->philos[i].pos = i;
-		options->philos[i].time = 0;
-		options->philos[i].eat_amount = 0;
-		options->philos[i].options = options;
-		pthread_mutex_init(&options->philos[i].mutex, NULL);
-		pthread_mutex_init(&options->sticks[i], NULL);
+		pthread_mutex_destroy(&options->forks[i]);
 		i++;
 	}
+	pthread_mutex_destroy(&options->write);
+	free(options->forks);
+	free(options->philos);
 }
 
-int		parse_options(t_options *options, int argc, char **argv)
+void	monitor(t_options *options, t_param *param)
 {
-	options->num = ft_atoi(argv[1]);
-	options->time_to_die = ft_atoi(argv[2]);
-	options->time_to_eat = ft_atoi(argv[3]);
-	options->time_to_sleep = ft_atoi(argv[4]);
-	options->total = 0;
-	if (argc == 6)
-		options->max_eat = ft_atoi(argv[5]);
-	else
-		options->max_eat = 0;
-	if (!(options->sticks = calloc(1, sizeof(pthread_mutex_t) * options->num)))
-		return (0);
-	if (!(options->philos = calloc(1, sizeof(t_philo) * options->num)))
-		return (0);
-	printf("num : %d / ttd : %d / tte : %d / tts : %d / max : %d\n", options->num, options->time_to_die, options->time_to_eat, options->time_to_sleep, options->max_eat);
-	create_philos(options);
-	pthread_mutex_init(&options->mutex, NULL);
-	pthread_mutex_init(&options->write, NULL);
-	return (1);
+	int		i;
+
+	options->finish = 0;
+	while (!options->finish)
+	{
+		i = 0;
+		while (i < param->philo_num)
+		{
+			if (get_time() - options->philos[i].last_eat > param->time_to_die)
+			{
+				pthread_mutex_lock(&options->write);
+				state_msg2(&options->philos[i], "is dead", options->start_time);
+				options->finish = 1;
+				break ;
+			}
+			else if (options->total_eat == param->philo_num)
+			{
+				pthread_mutex_lock(&options->write);
+				options->finish = 1;
+				break ;
+			}
+			i++;
+		}
+	}
 }
 
 int		main(int argc, char **argv)
 {
+	t_param		param;
 	t_options	options;
 
-	memset(&options, 0, sizeof(options));
+	ft_bzero(&param, sizeof(t_param));
+	ft_bzero(&options, sizeof(t_options));
 	if (argc < 5 || argc > 6)
+	{
+		ft_putstr("wrong number of arguments\n");
 		return (1);
-	if (!(parse_options(&options, argc, argv)))
+	}
+	if (!parse_params(&param, argv))
 		return (1);
-	if (!(start_multithread(&options)))
+	if (!create_philos(&options, &param))
+	{
+		ft_putstr("fail creating philos\n");
 		return (1);
-	destroy_mutex(&options);
+	}
+	if (!start_threads(&options, &param))
+	{
+		ft_putstr("fail creating threads\n");
+		return (1);
+	}
+	monitor(&options, &param);
+	destroy_all(&options, &param);
 	return (0);
 }

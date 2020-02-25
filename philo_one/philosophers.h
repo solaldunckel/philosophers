@@ -5,63 +5,71 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/28 16:39:40 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/02/15 16:50:06 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/02/25 19:08:51 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# include <stdlib.h>
-# include <pthread.h>
 # include <unistd.h>
-# include <sys/time.h>
+# include <pthread.h>
+# include <stdlib.h>
 # include <string.h>
-# include <stdio.h>
+# include <sys/time.h>
 
 typedef struct	s_philo
 {
 	int					pos;
-	time_t				time;
-	int					eat_amount;
-	pthread_mutex_t		mutex;
-	struct	s_options	*options;
+	int					left;
+	int					right;
+	time_t				last_eat;
+	int					eat_count;
+	pthread_t			*thr;
+	struct s_options	*options;
 }				t_philo;
+
+typedef struct	s_param
+{
+	int		philo_num;
+	int		time_to_die;
+	int		time_to_eat;
+	int		time_to_sleep;
+	int		max_eat;
+}				t_param;
 
 typedef struct	s_options
 {
-	int					num;
-	int					time_to_die;
-	int					time_to_eat;
-	int					time_to_sleep;
-	int					max_eat;
-	time_t				start;
-	int					count;
-	int					total;
+	time_t				start_time;
+	int					total_eat;
+	int					finish;
 	pthread_mutex_t		write;
-	pthread_mutex_t		mutex;
-	pthread_mutex_t		*sticks;
+	pthread_mutex_t		*forks;
 	t_philo				*philos;
+	t_param				*param;
 }				t_options;
+
+void			philo_routine(t_philo *philo);
+int				parse_params(t_param *param, char **argv);
+int				create_philos(t_options *options, t_param *param);
+
+/*
+** PRINT_UTILS
+*/
+
+void			state_msg(t_philo *philo, char *str, time_t start_time);
+void			state_msg2(t_philo *philo, char *str, time_t start_time);
+void			ft_putstr(char *str);
 
 /*
 ** UTILS
 */
 
-size_t			ft_strlen(const char *s);
+time_t			get_time(void);
+int				ft_strlen(char *str);
 int				ft_atoi(const char *nptr);
-void			ft_putnbr(int n);
-void			ft_putstr(char *s);
-time_t			get_time();
-void 			state_msg(t_philo *philo, char *str);
-void			destroy_mutex(t_options *options);
-
-/*
-** ACTIONS
-*/
-void 			take_sticks(t_philo *philo);
-void			death(t_philo *philo);
-void 			rules(t_philo *philo);
+void			ft_bzero(void *s, size_t n);
+void			*ft_calloc(size_t size);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:54:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/02/24 18:45:22 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/02/25 19:08:27 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	add_str_to_buf(char buf[], char *str, int *count)
 	}
 }
 
-void	state_msg(int philo_pos, char *str, time_t start_time)
+void	state_msg(t_philo *philo, char *str, time_t start_time)
 {
 	char	buf[256];
 	int		count;
@@ -63,7 +63,27 @@ void	state_msg(int philo_pos, char *str, time_t start_time)
 	time = get_time();
 	add_int_to_buf(buf, time - start_time, &count);
 	buf[count++] = ' ';
-	add_int_to_buf(buf, philo_pos + 1, &count);
+	add_int_to_buf(buf, philo->pos + 1, &count);
+	buf[count++] = ' ';
+	add_str_to_buf(buf, str, &count);
+	buf[count++] = '\n';
+	pthread_mutex_lock(&philo->options->write);
+	if (!philo->options->finish)
+		write(1, buf, count);
+	pthread_mutex_unlock(&philo->options->write);
+}
+
+void	state_msg2(t_philo *philo, char *str, time_t start_time)
+{
+	char	buf[256];
+	int		count;
+	time_t	time;
+
+	count = 0;
+	time = get_time();
+	add_int_to_buf(buf, time - start_time, &count);
+	buf[count++] = ' ';
+	add_int_to_buf(buf, philo->pos + 1, &count);
 	buf[count++] = ' ';
 	add_str_to_buf(buf, str, &count);
 	buf[count++] = '\n';
