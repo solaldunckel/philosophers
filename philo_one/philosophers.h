@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/02/25 19:08:51 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/13 12:49:25 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,34 +25,30 @@ typedef struct	s_philo
 	int					left;
 	int					right;
 	time_t				last_eat;
-	int					eat_count;
-	pthread_t			*thr;
+	int					eating;
+	pthread_t			thr;
 	struct s_options	*options;
 }				t_philo;
 
-typedef struct	s_param
-{
-	int		philo_num;
-	int		time_to_die;
-	int		time_to_eat;
-	int		time_to_sleep;
-	int		max_eat;
-}				t_param;
-
 typedef struct	s_options
 {
+	int					philo_num;
+	int					time_to_die;
+	int					time_to_eat;
+	int					time_to_sleep;
+	int					max_eat;
+	int					dead;
 	time_t				start_time;
 	int					total_eat;
-	int					finish;
 	pthread_mutex_t		write;
 	pthread_mutex_t		*forks;
 	t_philo				*philos;
-	t_param				*param;
 }				t_options;
 
 void			philo_routine(t_philo *philo);
-int				parse_params(t_param *param, char **argv);
-int				create_philos(t_options *options, t_param *param);
+int				parse_params(t_options *options, char **argv);
+int				create_philos(t_options *options);
+void			monitor(t_options *options, int philo_num);
 
 /*
 ** PRINT_UTILS
@@ -60,8 +56,7 @@ int				create_philos(t_options *options, t_param *param);
 
 void			state_msg(t_philo *philo, char *str, time_t start_time);
 void			state_msg2(t_philo *philo, char *str, time_t start_time);
-void			ft_putstr(char *str);
-
+int				ft_putstr(char *str);
 /*
 ** UTILS
 */

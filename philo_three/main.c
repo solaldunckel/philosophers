@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 13:17:03 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/13 15:32:38 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int		start_threads(t_options *options)
 {
 	t_philo		*philo;
-	pthread_t	thr;
 	int			i;
 	time_t		time;
 
@@ -27,10 +26,8 @@ int		start_threads(t_options *options)
 		ft_bzero(&thr, sizeof(pthread_t));
 		philo = &options->philos[i];
 		philo->last_eat = time;
-		if (pthread_create(&thr, NULL, (void*)philo_routine, philo))
+		if ((philo->pid = create_fork(philo)) < 0)
 			return (0);
-		usleep(10);
-		philo->thr = thr;
 		i++;
 	}
 	return (1);
@@ -38,14 +35,6 @@ int		start_threads(t_options *options)
 
 void	destroy_all(t_options *options)
 {
-	int		i;
-
-	i = 0;
-	while (i < options->philo_num)
-	{
-		pthread_detach(options->philos[i].thr);
-		i++;
-	}
 	sem_unlink(S_FORK);
 	sem_unlink(S_WRITE);
 	free(options->philos);
@@ -97,6 +86,9 @@ int		main(int argc, char **argv)
 	if (!start_threads(&options))
 		return (ft_putstr("fail creating threads\n"));
 	monitor(&options, options.philo_num);
+	int	i = 0;
+	while (i < options.philo_num)
+		kill(options.philos[i++].pid, SIGKILL);
 	destroy_all(&options);
 	return (0);
 }

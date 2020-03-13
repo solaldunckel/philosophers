@@ -6,11 +6,11 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 12:46:01 by sdunckel          #+#    #+#              #
-#    Updated: 2020/03/13 13:27:36 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/03/13 14:56:21 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME			= philo_one
+NAME			= philo_three
 
 SRCS_LIST		= \
 					main.c \

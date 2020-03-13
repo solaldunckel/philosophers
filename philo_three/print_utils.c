@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:54:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 12:51:33 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/13 15:05:13 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,9 @@ void	state_msg(t_philo *philo, char *str, time_t start_time)
 	buf[count++] = ' ';
 	add_str_to_buf(buf, str, &count);
 	buf[count++] = '\n';
-	if (philo->options->dead)
-		return;
-	pthread_mutex_lock(&philo->options->write);
+	sem_wait(philo->options->write);
 	write(1, buf, count);
-	pthread_mutex_unlock(&philo->options->write);
+	sem_post(philo->options->write);
 }
 
 void	state_msg2(t_philo *philo, char *str, time_t start_time)
