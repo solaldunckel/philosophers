@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/16 17:17:53 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/29 07:24:59 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,6 @@ int		create_fork(t_philo *philo)
 	else if (pid < 0)
 		return (pid);
 	return (pid);
-}
-
-void	take_forks(t_philo *philo)
-{
-	sem_wait(philo->options->forks);
-	state_msg(philo, "has taken a fork", philo->options->start_time);
-	sem_wait(philo->options->forks);
-	state_msg(philo, "has taken a fork", philo->options->start_time);
 }
 
 int		start_eat(t_philo *philo)
@@ -80,7 +72,7 @@ void	monitor_routine(t_philo *philo)
 
 void	philo_routine(t_philo *philo)
 {
-	int		eat_count;
+	int			eat_count;
 	pthread_t	thr;
 
 	eat_count = 0;
@@ -88,12 +80,16 @@ void	philo_routine(t_philo *philo)
 		return ;
 	while (1)
 	{
-		take_forks(philo);
+		sem_wait(philo->options->forks);
+		state_msg(philo, "has taken a fork", philo->options->start_time);
+		sem_wait(philo->options->forks);
+		state_msg(philo, "has taken a fork", philo->options->start_time);
 		if (start_eat(philo))
 			philo->eat_count++;
 		drop_forks(philo);
-		if (philo->options->max_eat && philo->options->max_eat == philo->eat_count)
-			break;
+		if (philo->options->max_eat
+			&& philo->options->max_eat == philo->eat_count)
+			break ;
 		state_msg(philo, "is sleeping", philo->options->start_time);
 		usleep(philo->options->time_to_sleep * 1000);
 		state_msg(philo, "is thinking", philo->options->start_time);

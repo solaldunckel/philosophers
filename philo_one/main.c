@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 12:49:37 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/29 07:37:03 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,8 @@ void	monitor(t_options *options, int philo_num)
 		i = 0;
 		while (i < philo_num)
 		{
-			if (options->total_eat == philo_num)
-			{
-				finish = 1;
+			if (options->total_eat == philo_num && (finish = 1) == 1)
 				break ;
-			}
 			if (!options->philos[i].eating && get_time()
 				- options->philos[i].last_eat > options->time_to_die)
 			{

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 13:13:28 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/29 07:23:21 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ int		parse_params(t_options *options, char **argv)
 		options->max_eat = ft_atoi(argv[5]);
 	else
 		options->max_eat = 0;
-	if (options->philo_num < 1 || options->time_to_die < 1 || options->max_eat < 0
-		|| options->time_to_eat < 1 || options->time_to_sleep < 1)
+	if (options->philo_num < 1 || options->time_to_die < 1
+		|| options->max_eat < 0 || options->time_to_eat < 1
+		|| options->time_to_sleep < 1)
 		return (0);
 	return (1);
 }

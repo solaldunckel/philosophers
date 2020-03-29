@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 12:52:22 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/29 07:23:09 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	philo_routine(t_philo *philo)
 		if (eat_count == philo->options->max_eat)
 		{
 			philo->options->total_eat++;
-			return;
+			return ;
 		}
 		state_msg(philo, "is sleeping", philo->options->start_time);
 		usleep(philo->options->time_to_sleep * 1000);
