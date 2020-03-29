@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 13:14:47 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/16 16:27:47 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ int		create_philos(t_options *options)
 		* sizeof(t_philo))))
 		return (0);
 	options->forks = sem_open(S_FORK, O_CREAT, 0644, options->philo_num);
+	options->write = sem_open(S_WRITE, O_CREAT, 0644, 1);
+	if (!options->forks)
+	{
+		ft_putstr("can't create semaphore\n");
+		return (0);
+	}
 	while (++i < options->philo_num)
 	{
 		ft_bzero(&options->philos[i], sizeof(t_philo));

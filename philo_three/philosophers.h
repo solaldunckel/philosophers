@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 15:20:06 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/16 14:10:33 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 typedef struct	s_philo
 {
 	int					pos;
+	int					eat_count;
 	time_t				last_eat;
 	int					eating;
 	pthread_t			thr;

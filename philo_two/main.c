@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 13:17:03 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/16 16:30:20 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int		start_threads(t_options *options)
 		philo->last_eat = time;
 		if (pthread_create(&thr, NULL, (void*)philo_routine, philo))
 			return (0);
-		usleep(10);
+		usleep(40);
 		philo->thr = thr;
 		i++;
 	}

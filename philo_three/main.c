@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 15:32:38 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/16 17:15:17 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int		start_threads(t_options *options)
 	options->start_time = time;
 	while (i < options->philo_num)
 	{
-		ft_bzero(&thr, sizeof(pthread_t));
 		philo = &options->philos[i];
 		philo->last_eat = time;
 		if ((philo->pid = create_fork(philo)) < 0)
@@ -43,28 +42,25 @@ void	destroy_all(t_options *options)
 void	monitor(t_options *options, int philo_num)
 {
 	int		i;
-	int		finish;
+	int		count;
+	int		status;
+	int		finished;
 
-	finish = 0;
-	while (!finish)
+	count = 0;
+	finished = 0;
+	while (!finished)
 	{
 		i = 0;
 		while (i < philo_num)
 		{
-			if (options->total_eat == philo_num)
+			status = 0;
+			if (waitpid(options->philos[i].pid, &status, 0) < 0)
 			{
-				finish = 1;
-				break ;
+				if (!WEXITSTATUS(status))
+					count++;
 			}
-			if (!options->philos[i].eating && get_time()
-				- options->philos[i].last_eat > options->time_to_die)
-			{
-				sem_wait(options->write);
-				state_msg2(&options->philos[i], "is dead", options->start_time);
-				options->dead = 1;
-				finish = 1;
-				break ;
-			}
+			if (count == options->philo_num)
+				finished = 1;
 			i++;
 		}
 	}
@@ -86,9 +82,6 @@ int		main(int argc, char **argv)
 	if (!start_threads(&options))
 		return (ft_putstr("fail creating threads\n"));
 	monitor(&options, options.philo_num);
-	int	i = 0;
-	while (i < options.philo_num)
-		kill(options.philos[i++].pid, SIGKILL);
 	destroy_all(&options);
 	return (0);
 }
