@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 13:08:37 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/30 11:47:41 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@
 # include <string.h>
 # include <sys/time.h>
 
-# define S_WRITE "write"
-# define S_FORK "fork"
+# define S_WRITE "/write"
+# define S_FORK "/fork"
+# define S_DEAD "/dead"
 
 typedef struct	s_philo
 {
@@ -29,6 +30,7 @@ typedef struct	s_philo
 	time_t				last_eat;
 	int					eating;
 	pthread_t			thr;
+	pthread_t			monitor;
 	struct s_options	*options;
 }				t_philo;
 
@@ -39,9 +41,10 @@ typedef struct	s_options
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					max_eat;
-	int					dead;
 	time_t				start_time;
+	int					finish;
 	int					total_eat;
+	sem_t				*dead;
 	sem_t				*write;
 	sem_t				*forks;
 	t_philo				*philos;
@@ -50,7 +53,7 @@ typedef struct	s_options
 void			philo_routine(t_philo *philo);
 int				parse_params(t_options *options, char **argv);
 int				create_philos(t_options *options);
-void			monitor(t_options *options, int philo_num);
+void			monitor(t_philo *philo);
 
 /*
 ** PRINT_UTILS

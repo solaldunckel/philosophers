@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/29 07:22:57 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/30 11:46:06 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,9 @@ int		parse_params(t_options *options, char **argv)
 	else
 		options->max_eat = 0;
 	if (options->philo_num < 1 || options->time_to_die < 1
-		|| options->max_eat < 0 || options->time_to_eat < 1 
+		|| options->max_eat < 0 || options->time_to_eat < 1
 		|| options->time_to_sleep < 1)
-	{
-		ft_putstr("wrong arguments\n");
 		return (0);
-	}
 	return (1);
 }
 
@@ -42,11 +39,9 @@ int		create_philos(t_options *options)
 		return (0);
 	options->forks = sem_open(S_FORK, O_CREAT, 0644, options->philo_num);
 	options->write = sem_open(S_WRITE, O_CREAT, 0644, 1);
-	if (!options->forks)
-	{
-		ft_putstr("can't create semaphore\n");
+	options->dead = sem_open(S_DEAD, O_CREAT, 0644, 1);
+	if (!options->forks || !options->write || !options->dead)
 		return (0);
-	}
 	while (++i < options->philo_num)
 	{
 		ft_bzero(&options->philos[i], sizeof(t_philo));

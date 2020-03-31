@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 12:49:25 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/30 09:27:32 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct	s_philo
 	time_t				last_eat;
 	int					eating;
 	pthread_t			thr;
+	pthread_t			monitor;
 	struct s_options	*options;
 }				t_philo;
 
@@ -37,18 +38,20 @@ typedef struct	s_options
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					max_eat;
-	int					dead;
 	time_t				start_time;
+	int					finish;
 	int					total_eat;
+	pthread_mutex_t		dead;
 	pthread_mutex_t		write;
 	pthread_mutex_t		*forks;
+	int					*forks_n;
 	t_philo				*philos;
 }				t_options;
 
 void			philo_routine(t_philo *philo);
 int				parse_params(t_options *options, char **argv);
 int				create_philos(t_options *options);
-void			monitor(t_options *options, int philo_num);
+void			monitor(t_philo *philo);
 
 /*
 ** PRINT_UTILS

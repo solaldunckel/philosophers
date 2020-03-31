@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:54:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/29 07:23:54 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/03/30 12:21:06 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	state_msg(t_philo *philo, char *str, time_t start_time)
 	buf[count++] = ' ';
 	add_str_to_buf(buf, str, &count);
 	buf[count++] = '\n';
-	if (philo->options->dead)
+	if (philo->options->finish)
 		return ;
 	sem_wait(philo->options->write);
 	write(1, buf, count);
@@ -87,6 +87,7 @@ void	state_msg2(t_philo *philo, char *str, time_t start_time)
 	add_int_to_buf(buf, philo->pos + 1, &count);
 	buf[count++] = ' ';
 	add_str_to_buf(buf, str, &count);
+	buf[count++] = '\n';
 	write(1, buf, count);
 }
 
