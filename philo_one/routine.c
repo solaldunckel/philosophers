@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/30 10:05:16 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/09 19:35:18 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ void	take_forks(t_philo *philo)
 
 void	start_eat(t_philo *philo)
 {
-	philo->eating = 1;
 	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();
+	pthread_mutex_lock(&philo->eating);
 	usleep(philo->options->time_to_eat * 1000);
-	philo->eating = 0;
+	pthread_mutex_unlock(&philo->eating);
 	philo->options->forks_n[philo->left] = 0;
 	pthread_mutex_unlock(&philo->options->forks[philo->left]);
 	philo->options->forks_n[philo->right] = 0;
@@ -54,12 +54,15 @@ void	philo_routine(t_philo *philo)
 		start_eat(philo);
 		eat_count++;
 		if (eat_count == philo->options->max_eat)
-		{
-			philo->options->total_eat++;
+			break ;
+		if (philo->options->finish)
 			return ;
-		}
 		state_msg(philo, "is sleeping", philo->options->start_time);
 		usleep(philo->options->time_to_sleep * 1000);
+		if (philo->options->finish)
+			return ;
 		state_msg(philo, "is thinking", philo->options->start_time);
 	}
+	philo->options->total_eat++;
+	return ;
 }

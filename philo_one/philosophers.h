@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/30 09:27:32 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/09 19:18:45 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct	s_philo
 	int					left;
 	int					right;
 	time_t				last_eat;
-	int					eating;
+	pthread_mutex_t		eating;
 	pthread_t			thr;
 	pthread_t			monitor;
 	struct s_options	*options;

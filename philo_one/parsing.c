@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/30 09:25:41 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/09 19:19:52 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int		create_philos(t_options *options)
 	pthread_mutex_init(&options->dead, NULL);
 	while (++i < options->philo_num)
 	{
-		memset(&options->philos[i], 0, sizeof(t_philo));
+		pthread_mutex_init(&options->philos[i].eating, NULL);
 		options->philos[i].pos = i;
 		options->philos[i].options = options;
 		options->philos[i].right = i;
