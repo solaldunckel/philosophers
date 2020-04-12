@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/30 11:47:41 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/12 19:22:40 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,20 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/time.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
 # define S_WRITE "/write"
 # define S_FORK "/fork"
-# define S_DEAD "/dead"
+# define S_EAT "/eat"
 
 typedef struct	s_philo
 {
 	int					pos;
 	time_t				last_eat;
-	int					eating;
+	int					finished;
+	sem_t				*eating;
 	pthread_t			thr;
 	pthread_t			monitor;
 	struct s_options	*options;
@@ -44,7 +48,6 @@ typedef struct	s_options
 	time_t				start_time;
 	int					finish;
 	int					total_eat;
-	sem_t				*dead;
 	sem_t				*write;
 	sem_t				*forks;
 	t_philo				*philos;
@@ -61,7 +64,10 @@ void			monitor(t_philo *philo);
 
 void			state_msg(t_philo *philo, char *str, time_t start_time);
 void			state_msg2(t_philo *philo, char *str, time_t start_time);
-int				ft_putstr(char *str);
+int				ft_putstr(int fd, char *str);
+int				wrong_args(char *str, char **argv);
+void			add_str_to_buf(char buf[], char *str, int *count);
+void			add_int_to_buf(char buf[], time_t num, int *count);
 /*
 ** UTILS
 */

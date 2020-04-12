@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:48:41 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/13 13:36:07 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/12 19:21:56 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,8 @@ void	ft_bzero(void *s, size_t n)
 
 void	*ft_calloc(size_t size)
 {
-	size_t	i;
 	void	*mem;
 
-	i = 0;
 	if (!(mem = malloc(size)))
 		return (NULL);
 	ft_bzero(mem, size);

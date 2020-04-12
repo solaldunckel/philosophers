@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/30 16:09:59 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/12 19:16:03 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int		start_threads(t_options *options)
 		if (pthread_create(&philo->thr, NULL, (void*)philo_routine, philo))
 			return (0);
 		pthread_detach(philo->thr);
-		usleep(10);
+		usleep(100);
 		i++;
 	}
 	return (1);
@@ -36,9 +36,16 @@ int		start_threads(t_options *options)
 
 void	destroy_all(t_options *options)
 {
-	sem_unlink(S_FORK);
-	sem_unlink(S_WRITE);
-	sem_unlink(S_DEAD);
+	int		i;
+
+	i = 0;
+	while (i < options->philo_num)
+	{
+		sem_close(options->philos[i].eating);
+		i++;
+	}
+	sem_close(options->write);
+	sem_close(options->forks);
 	free(options->philos);
 }
 
@@ -47,61 +54,58 @@ void	monitor(t_philo *philo)
 	while (!philo->options->finish)
 	{
 		if (philo->options->total_eat == philo->options->philo_num)
-		{
-			philo->options->finish = 1;
 			break ;
-		}
-		if (!philo->eating && get_time()
-			- philo->last_eat > philo->options->time_to_die
+		if (philo->finished)
+			return ;
+		usleep(5000);
+		sem_wait(philo->eating);
+		if (get_time() - philo->last_eat > philo->options->time_to_die
 			&& !philo->options->finish)
 		{
 			philo->options->finish = 1;
 			state_msg2(philo, "is dead", philo->options->start_time);
 			sem_wait(philo->options->write);
-			break ;
 		}
-		usleep(5000);
-		if (philo->options->finish)
-			return ;
+		sem_post(philo->eating);
 	}
-	sem_post(philo->options->dead);
+	philo->options->finish = 1;
 }
 
-void	start_monitor(t_options *options, t_philo *philo, int philo_num)
+void	start_monitor(t_philo *philo, int philo_num)
 {
-	int			i;
+	int		i;
 
 	i = 0;
-	sem_wait(options->dead);
 	while (i < philo_num)
 	{
 		if (pthread_create(&philo[i].monitor, NULL, (void*)monitor, &philo[i]))
 			return ;
-		pthread_detach(philo[i].monitor);
 		usleep(10);
 		i++;
 	}
-	return ;
+	i = 0;
+	while (i < philo_num)
+	{
+		pthread_join(philo[i].thr, NULL);
+		pthread_join(philo[i].monitor, NULL);
+		i++;
+	}
 }
 
 int		main(int argc, char **argv)
 {
 	t_options	options;
 
-	sem_unlink(S_FORK);
-	sem_unlink(S_WRITE);
-	sem_unlink(S_DEAD);
 	ft_bzero(&options, sizeof(t_options));
 	if (argc < 5 || argc > 6)
-		return (ft_putstr("wrong number of arguments\n"));
+		return (wrong_args("not enough arguments", argv));
 	if (!parse_params(&options, argv))
-		return (ft_putstr("wrong arguments\n"));
+		return (wrong_args("wrong arguments", argv));
 	if (!create_philos(&options))
-		return (ft_putstr("fail creating philos\n"));
+		return (ft_putstr(2, "error : fail creating philos\n"));
 	if (!start_threads(&options))
-		return (ft_putstr("fail creating threads\n"));
-	start_monitor(&options, options.philos, options.philo_num);
-	sem_wait(options.dead);
+		return (ft_putstr(2, "error : fail creating threads\n"));
+	start_monitor(options.philos, options.philo_num);
 	destroy_all(&options);
 	return (0);
 }

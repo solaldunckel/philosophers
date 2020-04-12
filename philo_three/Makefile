@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 12:46:01 by sdunckel          #+#    #+#              #
-#    Updated: 2020/03/16 13:39:04 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/04/12 19:17:43 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,13 +22,13 @@ SRCS_LIST		= \
 OBJS			= ${SRCS_LIST:.c=.o}
 
 CC				= gcc
-CFLAGS 			= # -Wall -Wextra -Werror
+CFLAGS 			= -Wall -Wextra -Werror
 RM				= rm -f
 
 all:			$(NAME)
 
 $(NAME):		$(OBJS)
-				@$(CC) $(CFLAGS) -I . $(OBJS) -o $(NAME)
+				@$(CC) $(CFLAGS) -I . $(OBJS) -o $(NAME) -lpthread
 
 %.o: %.c
 				@$(CC) $(CFLAGS) -I . -o $@ -c $<

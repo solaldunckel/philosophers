@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/03/30 16:01:23 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/12 19:09:59 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,17 @@ int		create_fork(t_philo *philo)
 	return (pid);
 }
 
-void	take_forks(t_philo *philo)
+void	eat(t_philo *philo)
 {
 	sem_wait(philo->options->forks);
 	state_msg(philo, "has taken a fork", philo->options->start_time);
 	sem_wait(philo->options->forks);
 	state_msg(philo, "has taken a fork", philo->options->start_time);
-}
-
-void	start_eat(t_philo *philo)
-{
-	philo->eating = 1;
+	sem_wait(philo->eating);
 	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();
 	usleep(philo->options->time_to_eat * 1000);
-	philo->eating = 0;
+	sem_post(philo->eating);
 	sem_post(philo->options->forks);
 	sem_post(philo->options->forks);
 }
@@ -46,15 +42,13 @@ void	start_eat(t_philo *philo)
 void	philo_routine(t_philo *philo)
 {
 	int			eat_count;
-	pthread_t	thr;
 
 	eat_count = 0;
 	if (pthread_create(&philo->monitor, NULL, (void*)monitor, philo))
 		return ;
 	while (1)
 	{
-		take_forks(philo);
-		start_eat(philo);
+		eat(philo);
 		eat_count++;
 		if (eat_count == philo->options->max_eat)
 			exit(0);

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/09 19:18:45 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/12 19:22:37 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,16 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/time.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
 typedef struct	s_philo
 {
 	int					pos;
 	int					left;
 	int					right;
+	int					finished;
 	time_t				last_eat;
 	pthread_mutex_t		eating;
 	pthread_t			thr;
@@ -41,7 +45,6 @@ typedef struct	s_options
 	time_t				start_time;
 	int					finish;
 	int					total_eat;
-	pthread_mutex_t		dead;
 	pthread_mutex_t		write;
 	pthread_mutex_t		*forks;
 	int					*forks_n;
@@ -59,7 +62,8 @@ void			monitor(t_philo *philo);
 
 void			state_msg(t_philo *philo, char *str, time_t start_time);
 void			state_msg2(t_philo *philo, char *str, time_t start_time);
-int				ft_putstr(char *str);
+int				ft_putstr(int fd, char *str);
+int				wrong_args(char *str, char **argv);
 /*
 ** UTILS
 */

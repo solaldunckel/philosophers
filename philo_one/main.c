@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/09 19:38:38 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/12 16:39:54 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int		start_threads(t_options *options)
 		if (pthread_create(&philo->thr, NULL, (void*)philo_routine, philo))
 			return (0);
 		pthread_detach(philo->thr);
-		usleep(10);
+		usleep(100);
 		i++;
 	}
 	return (1);
@@ -48,7 +48,6 @@ void	destroy_all(t_options *options)
 	free(options->forks_n);
 	free(options->philos);
 	pthread_mutex_destroy(&options->write);
-	pthread_mutex_destroy(&options->dead);
 }
 
 void	monitor(t_philo *philo)
@@ -57,17 +56,17 @@ void	monitor(t_philo *philo)
 	{
 		if (philo->options->total_eat == philo->options->philo_num)
 			break ;
+		if (philo->finished)
+			return ;
+		usleep(5000);
 		pthread_mutex_lock(&philo->eating);
-		if (get_time() - philo->last_eat > philo->options->time_to_die)
+		if (get_time() - philo->last_eat > philo->options->time_to_die
+			&& !philo->options->finish)
 		{
-			if (philo->options->finish)
-				return ;
 			philo->options->finish = 1;
-			state_msg(philo, "is dead", philo->options->start_time);
-			pthread_mutex_lock(&philo->options->write);
+			state_msg2(philo, "is dead", philo->options->start_time);
 		}
 		pthread_mutex_unlock(&philo->eating);
-		usleep(5000);
 	}
 	philo->options->finish = 1;
 }
@@ -84,30 +83,29 @@ void	start_monitor(t_philo *philo, int philo_num)
 		usleep(10);
 		i++;
 	}
-	return ;
+	i = 0;
+	while (i < philo_num)
+	{
+		pthread_join(philo[i].thr, NULL);
+		pthread_join(philo[i].monitor, NULL);
+		i++;
+	}
 }
 
 int		main(int argc, char **argv)
 {
 	t_options	options;
-	int			i;
 
-	i = 0;
 	memset(&options, 0, sizeof(t_options));
 	if (argc < 5 || argc > 6)
-		return (ft_putstr("wrong number of arguments\n"));
+		return (wrong_args("not enough arguments", argv));
 	if (!parse_params(&options, argv))
-		return (ft_putstr("wrong arguments\n"));
+		return (wrong_args("wrong arguments", argv));
 	if (!create_philos(&options))
-		return (ft_putstr("fail creating philos\n"));
+		return (ft_putstr(2, "error : fail creating philos\n"));
 	if (!start_threads(&options))
-		return (ft_putstr("fail creating threads\n"));
+		return (ft_putstr(2, "error : fail creating threads\n"));
 	start_monitor(options.philos, options.philo_num);
-	while (i < options.philo_num)
-	{
-		pthread_join(options.philos[i].monitor, NULL);
-		i++;
-	}
 	destroy_all(&options);
 	return (0);
 }

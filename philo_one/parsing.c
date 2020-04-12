@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/09 19:19:52 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/04/12 13:46:32 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,17 @@ int		parse_params(t_options *options, char **argv)
 	return (1);
 }
 
+int		wrong_args(char *str, char **argv)
+{
+	ft_putstr(2, "error: ");
+	ft_putstr(2, str);
+	ft_putstr(2, "\nusage: ");
+	ft_putstr(2, argv[0]);
+	ft_putstr(2, " number_of_philosophers time_to_die time_to_eat time_to_sleep"
+		" [number_of_times_each_philosopher_must_eat]\n");
+	return (1);
+}
+
 int		create_philos(t_options *options)
 {
 	int		i;
@@ -42,7 +53,6 @@ int		create_philos(t_options *options)
 	if (!(options->forks_n = ft_calloc(options->philo_num * sizeof(int))))
 		return (0);
 	pthread_mutex_init(&options->write, NULL);
-	pthread_mutex_init(&options->dead, NULL);
 	while (++i < options->philo_num)
 	{
 		pthread_mutex_init(&options->philos[i].eating, NULL);

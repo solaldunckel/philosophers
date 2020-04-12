@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 12:46:01 by sdunckel          #+#    #+#              #
-#    Updated: 2020/04/09 19:06:03 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/04/12 19:21:40 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ RM				= rm -f
 all:			$(NAME)
 
 $(NAME):		$(OBJS)
-				@$(CC) $(CFLAGS) -I . $(OBJS) -o $(NAME)
+				@$(CC) $(CFLAGS) -I . $(OBJS) -o $(NAME) -lpthread
 
 %.o: %.c
 				@$(CC) $(CFLAGS) -I . -o $@ -c $<
