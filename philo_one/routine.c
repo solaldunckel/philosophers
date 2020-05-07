@@ -6,22 +6,20 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/07 22:23:00 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/07 23:39:48 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	real_sleep(unsigned long n)
+void	real_sleep(int n)
 {
-	unsigned long start;
-	unsigned long passed;
+	time_t start;
 
 	start = get_time();
 	while (1)
 	{
-		passed = get_time() - start;
-		if (passed >= n)
+		if (get_time() - start >= n)
 			break ;
 		usleep(10);
 	}
@@ -37,8 +35,8 @@ void	eat(t_philo *philo)
 			philo->options->forks_n[philo->left] = 1;
 			philo->options->forks_n[philo->right] = 1;
 			pthread_mutex_lock(&philo->options->forks[philo->left]);
-			state_msg(philo, "has taken a fork", philo->options->start_time);
 			pthread_mutex_lock(&philo->options->forks[philo->right]);
+			state_msg(philo, "has taken a fork", philo->options->start_time);
 			state_msg(philo, "has taken a fork", philo->options->start_time);
 			break ;
 		}

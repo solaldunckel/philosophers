@@ -6,11 +6,24 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 16:34:41 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/07 23:47:57 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	real_sleep(int n)
+{
+	time_t start;
+
+	start = get_time();
+	while (1)
+	{
+		if (get_time() - start >= n)
+			break ;
+		usleep(10);
+	}
+}
 
 void	eat(t_philo *philo)
 {
@@ -21,7 +34,7 @@ void	eat(t_philo *philo)
 	sem_wait(philo->eating);
 	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();
-	usleep(philo->options->time_to_eat * 1000);
+	real_sleep(philo->options->time_to_eat);
 	sem_post(philo->eating);
 	sem_post(philo->options->forks);
 	sem_post(philo->options->forks);
@@ -32,6 +45,7 @@ void	philo_routine(t_philo *philo)
 	int		eat_count;
 
 	eat_count = 0;
+	philo->last_eat = get_time();
 	while (1)
 	{
 		eat(philo);
@@ -43,7 +57,7 @@ void	philo_routine(t_philo *philo)
 			return ;
 		}
 		state_msg(philo, "is sleeping", philo->options->start_time);
-		usleep(philo->options->time_to_sleep * 1000);
+		real_sleep(philo->options->time_to_sleep);
 		state_msg(philo, "is thinking", philo->options->start_time);
 	}
 }

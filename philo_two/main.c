@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 19:16:03 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/08 00:03:30 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,16 @@ int		start_threads(t_options *options)
 {
 	t_philo		*philo;
 	int			i;
-	time_t		time;
 
 	i = 0;
-	time = get_time();
-	options->start_time = time;
+	options->start_time = get_time();
 	while (i < options->philo_num)
 	{
 		philo = &options->philos[i];
-		philo->last_eat = time;
 		if (pthread_create(&philo->thr, NULL, (void*)philo_routine, philo))
 			return (0);
 		pthread_detach(philo->thr);
-		usleep(100);
+		usleep(10);
 		i++;
 	}
 	return (1);
@@ -64,7 +61,6 @@ void	monitor(t_philo *philo)
 		{
 			philo->options->finish = 1;
 			state_msg2(philo, "is dead", philo->options->start_time);
-			sem_wait(philo->options->write);
 		}
 		sem_post(philo->eating);
 	}

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/07 22:02:23 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/08 00:03:34 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int		start_threads(t_options *options)
 		usleep(10);
 		i++;
 	}
-	// options->start_time = get_time();
 	return (1);
 }
 
@@ -84,7 +83,7 @@ void	start_monitor(t_philo *philo, int philo_num)
 	i = 0;
 	while (i < philo_num)
 	{
-		// pthread_join(philo[i].thr, NULL);
+		pthread_join(philo[i].thr, NULL);
 		pthread_join(philo[i].monitor, NULL);
 		i++;
 	}
