@@ -6,11 +6,26 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 13:22:52 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/07 22:23:00 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	real_sleep(unsigned long n)
+{
+	unsigned long start;
+	unsigned long passed;
+
+	start = get_time();
+	while (1)
+	{
+		passed = get_time() - start;
+		if (passed >= n)
+			break ;
+		usleep(10);
+	}
+}
 
 void	eat(t_philo *philo)
 {
@@ -31,7 +46,7 @@ void	eat(t_philo *philo)
 	pthread_mutex_lock(&philo->eating);
 	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();
-	usleep(philo->options->time_to_eat * 1000);
+	real_sleep(philo->options->time_to_eat);
 	pthread_mutex_unlock(&philo->eating);
 	pthread_mutex_unlock(&philo->options->forks[philo->left]);
 	pthread_mutex_unlock(&philo->options->forks[philo->right]);
@@ -44,6 +59,7 @@ void	philo_routine(t_philo *philo)
 	int		eat_count;
 
 	eat_count = 0;
+	philo->last_eat = get_time();
 	while (1)
 	{
 		eat(philo);
@@ -55,7 +71,7 @@ void	philo_routine(t_philo *philo)
 			return ;
 		}
 		state_msg(philo, "is sleeping", philo->options->start_time);
-		usleep(philo->options->time_to_sleep * 1000);
+		real_sleep(philo->options->time_to_sleep);
 		state_msg(philo, "is thinking", philo->options->start_time);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 16:39:54 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/07 22:02:23 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,19 @@ int		start_threads(t_options *options)
 {
 	t_philo		*philo;
 	int			i;
-	time_t		time;
 
 	i = 0;
-	time = get_time();
-	options->start_time = time;
+	options->start_time = get_time();
 	while (i < options->philo_num)
 	{
 		philo = &options->philos[i];
-		philo->last_eat = time;
 		if (pthread_create(&philo->thr, NULL, (void*)philo_routine, philo))
 			return (0);
 		pthread_detach(philo->thr);
-		usleep(100);
+		usleep(10);
 		i++;
 	}
+	// options->start_time = get_time();
 	return (1);
 }
 
@@ -86,7 +84,7 @@ void	start_monitor(t_philo *philo, int philo_num)
 	i = 0;
 	while (i < philo_num)
 	{
-		pthread_join(philo[i].thr, NULL);
+		// pthread_join(philo[i].thr, NULL);
 		pthread_join(philo[i].monitor, NULL);
 		i++;
 	}
