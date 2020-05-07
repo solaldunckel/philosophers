@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/07 23:39:48 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/08 00:09:01 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,20 @@ void	real_sleep(int n)
 
 void	eat(t_philo *philo)
 {
-	while (1)
-	{
-		if (!philo->options->forks_n[philo->left]
-			&& !philo->options->forks_n[philo->right])
-		{
-			philo->options->forks_n[philo->left] = 1;
-			philo->options->forks_n[philo->right] = 1;
+	// while (1)
+	// {
+	// 	if (!philo->options->forks_n[philo->left]
+	// 		&& !philo->options->forks_n[philo->right])
+	// 	{
+	// 		philo->options->forks_n[philo->left] = 1;
+	// 		philo->options->forks_n[philo->right] = 1;
 			pthread_mutex_lock(&philo->options->forks[philo->left]);
 			pthread_mutex_lock(&philo->options->forks[philo->right]);
 			state_msg(philo, "has taken a fork", philo->options->start_time);
 			state_msg(philo, "has taken a fork", philo->options->start_time);
-			break ;
-		}
-	}
+	// 		break ;
+	// 	}
+	// }
 	pthread_mutex_lock(&philo->eating);
 	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();
@@ -57,7 +57,6 @@ void	philo_routine(t_philo *philo)
 	int		eat_count;
 
 	eat_count = 0;
-	philo->last_eat = get_time();
 	while (1)
 	{
 		eat(philo);

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/08 00:03:34 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/05/08 00:09:07 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int		start_threads(t_options *options)
 	while (i < options->philo_num)
 	{
 		philo = &options->philos[i];
+		philo->last_eat = get_time();
 		if (pthread_create(&philo->thr, NULL, (void*)philo_routine, philo))
 			return (0);
 		pthread_detach(philo->thr);
