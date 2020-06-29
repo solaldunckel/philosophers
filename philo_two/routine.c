@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/07 23:47:57 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/06/08 19:19:01 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ void	real_sleep(int n)
 
 void	eat(t_philo *philo)
 {
+	sem_wait(philo->options->picking);
 	sem_wait(philo->options->forks);
 	state_msg(philo, "has taken a fork", philo->options->start_time);
 	sem_wait(philo->options->forks);
 	state_msg(philo, "has taken a fork", philo->options->start_time);
+	sem_post(philo->options->picking);
 	sem_wait(philo->eating);
 	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();

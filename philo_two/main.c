@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/08 00:03:30 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/06/08 19:18:18 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	destroy_all(t_options *options)
 		i++;
 	}
 	sem_close(options->write);
+	sem_close(options->picking);
 	sem_close(options->forks);
 	free(options->philos);
 }

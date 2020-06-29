@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 19:22:40 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/06/08 19:18:38 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <fcntl.h>
 
 # define S_WRITE "/write"
+# define S_PICK "/pick"
 # define S_FORK "/fork"
 # define S_EAT "/eat"
 
@@ -49,6 +50,7 @@ typedef struct	s_options
 	int					finish;
 	int					total_eat;
 	sem_t				*write;
+	sem_t				*picking;
 	sem_t				*forks;
 	t_philo				*philos;
 }				t_options;
