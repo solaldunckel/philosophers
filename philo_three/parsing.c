@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 19:14:12 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/07/05 23:31:12 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int		create_philos(t_options *options)
 		return (0);
 	options->forks = create_sem(S_FORK, options->philo_num, -1);
 	options->write = create_sem(S_WRITE, 1, -1);
+	options->picking = create_sem(S_PICK, 1, -1);
 	if (!options->forks || !options->write)
 		return (0);
 	while (++i < options->philo_num)
