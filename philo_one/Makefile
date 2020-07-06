@@ -22,7 +22,7 @@ SRCS_LIST		= \
 OBJS			= ${SRCS_LIST:.c=.o}
 
 CC				= gcc
-CFLAGS 			= #-Wall -Wextra -Werror
+CFLAGS 			= -Wall -Wextra -Werror
 RM				= rm -f
 
 all:			$(NAME)
