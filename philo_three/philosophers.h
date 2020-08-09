@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/07/05 23:29:47 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/05 16:11:42 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/08 16:02:37 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,59 +30,57 @@
 # define S_FORK "/fork"
 # define S_EAT "/eat"
 
+# define PARSE_ERROR 0
+
+# define TAKEN_FORK "has taken a fork"
+# define SLEEPING "is sleeping"
+# define THINKING "is thinking"
+# define EATING "is eating"
+# define DEAD "died"
+
 typedef struct	s_philo
 {
-	int					pos;
-	int					eat_count;
-	time_t				last_eat;
+	int					num;
 	int					finished;
+	time_t				last_eat;
 	sem_t				*eating;
-	pthread_t			monitor;
 	pid_t				pid;
-	struct s_options	*options;
+	pthread_t			monitor;
 }				t_philo;
 
 typedef struct	s_options
 {
-	int					philo_num;
+	int					total_philo;
 	int					time_to_die;
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					max_eat;
 	time_t				start_time;
-	int					finish;
 	int					total_eat;
-	sem_t				*write;
+	int					finish;
 	sem_t				*picking;
+	sem_t				*write;
 	sem_t				*forks;
 	t_philo				*philos;
 }				t_options;
 
-void			philo_routine(t_philo *philo);
-int				parse_params(t_options *options, char **argv);
-int				create_philos(t_options *options);
-int				create_fork(t_philo *philo);
+t_options		*g_options;
+
+int				ft_atoi(const char *nptr);
+void			*ft_calloc(size_t size);
+void			ft_sleep(int n);
+time_t			get_time(void);
+int				ft_putstr_fd(int fd, char *str);
+
+void			state_msg(t_philo *philo, char *str);
+void			state_msg2(t_philo *philo, char *str);
+void			routine(t_philo *philo);
 void			monitor(t_philo *philo);
-void			destroy_all(t_options *options);
 
-/*
-** PRINT_UTILS
-*/
-
-void			state_msg(t_philo *philo, char *str, time_t start_time);
-void			state_msg2(t_philo *philo, char *str, time_t start_time);
-int				ft_putstr(int fd, char *str);
-int				wrong_args(char *str, char **argv);
+int				init_philos(t_options *opt);
+int				init_params(char **argv, int argc, t_options *opt);
+sem_t			*create_sem(char *str, int num, int pos);
 void			add_str_to_buf(char buf[], char *str, int *count);
 void			add_int_to_buf(char buf[], time_t num, int *count);
-/*
-** UTILS
-*/
-
-time_t			get_time(void);
-int				ft_strlen(char *str);
-int				ft_atoi(const char *nptr);
-void			ft_bzero(void *s, size_t n);
-void			*ft_calloc(size_t size);
 
 #endif

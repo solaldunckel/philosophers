@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 12:54:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 19:14:19 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/05 16:14:27 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/08 16:02:24 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,44 +53,7 @@ void	add_str_to_buf(char buf[], char *str, int *count)
 	}
 }
 
-void	state_msg(t_philo *philo, char *str, time_t start_time)
-{
-	char	buf[256];
-	int		count;
-	time_t	time;
-
-	count = 0;
-	time = get_time();
-	add_int_to_buf(buf, time - start_time, &count);
-	buf[count++] = ' ';
-	add_int_to_buf(buf, philo->pos + 1, &count);
-	buf[count++] = ' ';
-	add_str_to_buf(buf, str, &count);
-	buf[count++] = '\n';
-	sem_wait(philo->options->write);
-	if (!philo->options->finish)
-		write(1, buf, count);
-	sem_post(philo->options->write);
-}
-
-void	state_msg2(t_philo *philo, char *str, time_t start_time)
-{
-	char	buf[256];
-	int		count;
-	time_t	time;
-
-	count = 0;
-	time = get_time();
-	add_int_to_buf(buf, time - start_time, &count);
-	buf[count++] = ' ';
-	add_int_to_buf(buf, philo->pos + 1, &count);
-	buf[count++] = ' ';
-	add_str_to_buf(buf, str, &count);
-	buf[count++] = '\n';
-	write(1, buf, count);
-}
-
-int		ft_putstr(int fd, char *str)
+int		ft_putstr_fd(int fd, char *str)
 {
 	int		i;
 	char	buf[1024];
@@ -103,4 +66,41 @@ int		ft_putstr(int fd, char *str)
 	}
 	write(fd, buf, i);
 	return (1);
+}
+
+void	state_msg(t_philo *philo, char *str)
+{
+	char	buf[256];
+	int		count;
+	time_t	time;
+
+	count = 0;
+	time = get_time();
+	add_int_to_buf(buf, time - g_options->start_time, &count);
+	buf[count++] = ' ';
+	add_int_to_buf(buf, philo->num + 1, &count);
+	buf[count++] = ' ';
+	add_str_to_buf(buf, str, &count);
+	buf[count++] = '\n';
+	sem_wait(g_options->write);
+	if (!g_options->finish)
+		write(1, buf, count);
+	sem_post(g_options->write);
+}
+
+void	state_msg2(t_philo *philo, char *str)
+{
+	char	buf[256];
+	int		count;
+	time_t	time;
+
+	count = 0;
+	time = get_time();
+	add_int_to_buf(buf, time - g_options->start_time, &count);
+	buf[count++] = ' ';
+	add_int_to_buf(buf, philo->num + 1, &count);
+	buf[count++] = ' ';
+	add_str_to_buf(buf, str, &count);
+	buf[count++] = '\n';
+	write(1, buf, count);
 }

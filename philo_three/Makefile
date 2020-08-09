@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 12:46:01 by sdunckel          #+#    #+#              #
-#    Updated: 2020/04/12 19:17:43 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/08/06 19:27:28 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,14 +15,14 @@ NAME			= philo_three
 SRCS_LIST		= \
 					main.c \
 					routine.c \
-					utils.c \
 					parsing.c \
+					utils.c \
 					print_utils.c
 
 OBJS			= ${SRCS_LIST:.c=.o}
 
 CC				= gcc
-CFLAGS 			= -Wall -Wextra -Werror
+CFLAGS 			= #-Wall -Wextra -Werror
 RM				= rm -f
 
 all:			$(NAME)

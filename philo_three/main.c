@@ -5,103 +5,90 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/07/05 23:31:20 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/05 16:10:39 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/08 16:03:50 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int		start_threads(t_options *options)
+int		clear_all(t_options *opt)
 {
-	t_philo		*philo;
-	int			i;
-	time_t		time;
+	int i;
 
 	i = 0;
-	time = get_time();
-	options->start_time = time;
-	while (i < options->philo_num)
+	while (i < opt->total_philo)
 	{
-		philo = &options->philos[i];
-		philo->last_eat = time;
-		if (!(philo->pid = fork()))
-			philo_routine(philo);
-		usleep(100);
+		sem_close(opt->philos[i].eating);
 		i++;
 	}
-	return (1);
-}
-
-void	destroy_all(t_options *options)
-{
-	int		i;
-
-	i = 0;
-	while (i < options->philo_num)
-	{
-		sem_close(options->philos[i].eating);
-		i++;
-	}
-	sem_close(options->write);
-	sem_close(options->picking);
-	sem_close(options->forks);
-	free(options->philos);
+	sem_close(opt->write);
+	sem_close(opt->picking);
+	sem_close(opt->forks);
+	free(opt->philos);
+	return (0);
 }
 
 void	monitor(t_philo *philo)
 {
-	while (!philo->options->finish)
+	while (!g_options->finish)
 	{
-		usleep(5000);
 		sem_wait(philo->eating);
-		if (get_time() - philo->last_eat > philo->options->time_to_die)
+		if (get_time() - philo->last_eat > g_options->time_to_die)
 		{
-			sem_wait(philo->options->write);
-			philo->options->finish = 1;
-			state_msg2(philo, "is dead", philo->options->start_time);
+			sem_wait(g_options->write);
+			if (!g_options->finish)
+				state_msg2(philo, DEAD);
+			g_options->finish = 1;
+			sem_post(philo->eating);
+			break ;
 		}
 		sem_post(philo->eating);
+		usleep(1000);
 	}
 	exit(-1);
 }
 
-void	wait_forks(t_options *options)
+int		start_threads(t_options *opt)
 {
-	int		i;
-	int		status;
+	int	i;
+	int status;
 
+	opt->start_time = get_time();
+	i = -1;
+	while (++i < opt->total_philo)
+	{
+		opt->philos[i].last_eat = get_time();
+		if (!(opt->philos[i].pid = fork()))
+			routine(&opt->philos[i]);
+		usleep(100);
+	}
 	while (1)
 	{
 		status = 0;
 		if (waitpid(-1, &status, 0) < 0 || ((WIFEXITED(status)
 				|| WIFSIGNALED(status)) && status != 0))
 		{
-			i = 0;
-			while (i < options->philo_num)
-			{
-				kill(options->philos[i].pid, SIGINT);
-				i++;
-			}
+			i = -1;
+			while (++i < opt->total_philo)
+				kill(opt->philos[i].pid, SIGINT);
 			break ;
 		}
 	}
+	return (1);
 }
 
 int		main(int argc, char **argv)
 {
 	t_options	options;
 
-	ft_bzero(&options, sizeof(t_options));
-	if (argc < 5 || argc > 6)
-		return (wrong_args("not enough arguments", argv));
-	if (!parse_params(&options, argv))
-		return (wrong_args("wrong arguments", argv));
-	if (!create_philos(&options))
-		return (ft_putstr(2, "error : fail creating philos\n"));
+	g_options = &options;
+	memset(&options, 0, sizeof(t_options));
+	if (argc < 5 || argc > 6 || !init_params(argv, argc, &options))
+		return (ft_putstr_fd(2, "parsing error\n"));
+	if (!init_philos(&options))
+		return (ft_putstr_fd(2, "fail allocating memory\n"));
 	if (!start_threads(&options))
-		return (ft_putstr(2, "error : fail creating threads\n"));
-	wait_forks(&options);
-	destroy_all(&options);
-	return (0);
+		return (ft_putstr_fd(2, "fail starting threads\n"));
+	return (clear_all(&options));
 }

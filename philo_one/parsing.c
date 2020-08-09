@@ -5,66 +5,69 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/08/04 16:01:37 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/06 18:21:04 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/06 18:26:57 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int		parse_params(t_options *options, char **argv)
+int		only_digit(char *str)
 {
-	options->philo_num = ft_atoi(argv[1]);
-	options->time_to_die = ft_atoi(argv[2]);
-	options->time_to_eat = ft_atoi(argv[3]);
-	options->time_to_sleep = ft_atoi(argv[4]);
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int		init_params(char **argv, int argc, t_options *opt)
+{
+	int i;
+
+	i = 1;
+	while (i < argc)
+	{
+		if (!only_digit(argv[i]))
+			return (PARSE_ERROR);
+		i++;
+	}
+	if ((opt->total_philo = ft_atoi(argv[1])) < 1)
+		return (PARSE_ERROR);
+	if ((opt->time_to_die = ft_atoi(argv[2])) < 1)
+		return (PARSE_ERROR);
+	if ((opt->time_to_eat = ft_atoi(argv[3])) < 1)
+		return (PARSE_ERROR);
+	if ((opt->time_to_sleep = ft_atoi(argv[4])) < 1)
+		return (PARSE_ERROR);
 	if (argv[5])
-		options->max_eat = ft_atoi(argv[5]);
-	else
-		options->max_eat = 0;
-	if (options->philo_num < 1 || options->time_to_die < 1
-		|| options->max_eat < 0 || options->time_to_eat < 1
-		|| options->time_to_sleep < 1)
-		return (0);
+		if ((opt->max_eat = ft_atoi(argv[5])) < 1)
+			return (PARSE_ERROR);
 	return (1);
 }
 
-int		wrong_args(char *str, char **argv)
-{
-	ft_putstr(2, "error: ");
-	ft_putstr(2, str);
-	ft_putstr(2, "\nusage: ");
-	ft_putstr(2, argv[0]);
-	ft_putstr(2, " number_of_philosophers time_to_die time_to_eat time_to_sleep"
-		" [number_of_times_each_philosopher_must_eat]\n");
-	return (1);
-}
-
-int		create_philos(t_options *options)
+int		init_philos(t_options *opt)
 {
 	int		i;
 
-	i = -1;
-	if (!(options->philos = ft_calloc(options->philo_num * sizeof(t_philo))))
+	i = 0;
+	if (!(opt->philos = ft_calloc(sizeof(t_philo) * opt->total_philo)))
 		return (0);
-	if (!(options->forks = ft_calloc(options->philo_num
-		* sizeof(pthread_mutex_t))))
+	if (!(opt->forks = ft_calloc(sizeof(pthread_mutex_t) * opt->total_philo)))
 		return (0);
-	if (!(options->forks_n = ft_calloc(options->philo_num * sizeof(int))))
-		return (0);
-	pthread_mutex_init(&options->write, NULL);
-	pthread_mutex_init(&options->dead, NULL);
-	while (++i < options->philo_num)
+	pthread_mutex_init(&opt->write, NULL);
+	pthread_mutex_init(&opt->picking, NULL);
+	while (i < opt->total_philo)
 	{
-		pthread_mutex_init(&options->philos[i].eating, NULL);
-		options->philos[i].pos = i;
-		options->philos[i].options = options;
-		options->philos[i].right = i;
-		if (i == 0)
-			options->philos[i].left = options->philo_num - 1;
-		else
-			options->philos[i].left = i - 1;
-		pthread_mutex_init(&options->forks[i], NULL);
+		pthread_mutex_init(&opt->forks[i], NULL);
+		pthread_mutex_init(&opt->philos[i].eating, NULL);
+		opt->philos[i].num = i;
+		i++;
 	}
 	return (1);
 }

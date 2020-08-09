@@ -5,70 +5,47 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/07/05 23:31:38 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/06 18:22:50 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/06 19:32:53 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	real_sleep(int n)
-{
-	time_t start;
-
-	start = get_time();
-	while (1)
-	{
-		if (get_time() - start >= n)
-			break ;
-		usleep(10);
-	}
-}
-
-int		create_fork(t_philo *philo)
-{
-	pid_t		pid;
-
-	pid = fork();
-	if (pid == 0)
-		philo_routine(philo);
-	else if (pid < 0)
-		return (pid);
-	return (pid);
-}
-
 void	eat(t_philo *philo)
 {
-	sem_wait(philo->options->picking);
-	sem_wait(philo->options->forks);
-	state_msg(philo, "has taken a fork", philo->options->start_time);
-	sem_wait(philo->options->forks);
-	state_msg(philo, "has taken a fork", philo->options->start_time);
-	sem_post(philo->options->picking);
+	sem_wait(g_options->picking);
+	sem_wait(g_options->forks);
+	state_msg(philo, TAKEN_FORK);
+	sem_wait(g_options->forks);
+	state_msg(philo, TAKEN_FORK);
+	sem_post(g_options->picking);
 	sem_wait(philo->eating);
-	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();
-	real_sleep(philo->options->time_to_eat);
+	state_msg(philo, EATING);
+	if (!g_options->finish)
+		ft_sleep(g_options->time_to_eat);
 	sem_post(philo->eating);
-	sem_post(philo->options->forks);
-	sem_post(philo->options->forks);
+	sem_post(g_options->forks);
+	sem_post(g_options->forks);
 }
 
-void	philo_routine(t_philo *philo)
+void	routine(t_philo *philo)
 {
-	int			eat_count;
+	int		eat_count;
 
 	eat_count = 0;
 	if (pthread_create(&philo->monitor, NULL, (void*)monitor, philo))
-		return ;
-	while (1)
+		exit(0);
+	while (!g_options->finish)
 	{
 		eat(philo);
-		eat_count++;
-		if (eat_count == philo->options->max_eat)
+		if (g_options->finish)
 			exit(0);
-		state_msg(philo, "is sleeping", philo->options->start_time);
-		real_sleep(philo->options->time_to_sleep);
-		state_msg(philo, "is thinking", philo->options->start_time);
+		if (++eat_count == g_options->max_eat)
+			exit(0);
+		state_msg(philo, SLEEPING);
+		ft_sleep(g_options->time_to_sleep);
+		state_msg(philo, THINKING);
 	}
 }

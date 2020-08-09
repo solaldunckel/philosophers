@@ -5,66 +5,52 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 17:22:09 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/07/07 15:15:10 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/06 18:22:50 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/07 04:01:12 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	real_sleep(int n)
-{
-	time_t start;
-
-	start = get_time();
-	while ((get_time() - start) < n)
-		usleep(100);
-}
-
 void	eat(t_philo *philo)
 {
-	while (1)
-	{
-		if (!philo->options->forks_n[philo->left]
-			&& !philo->options->forks_n[philo->right])
-		{
-			philo->options->forks_n[philo->left] = 1;
-			philo->options->forks_n[philo->right] = 1;
-			pthread_mutex_lock(&philo->options->forks[philo->left]);
-			pthread_mutex_lock(&philo->options->forks[philo->right]);
-			state_msg(philo, "has taken a fork", philo->options->start_time);
-			state_msg(philo, "has taken a fork", philo->options->start_time);
-			break ;
-		}
-	}
+	int right;
+	int left;
+
+	right = philo->num;
+	left = (philo->num + 1) % g_options->total_philo;
+	pthread_mutex_lock(&g_options->forks[right]);
+	state_msg(philo, TAKEN_FORK);
+	pthread_mutex_lock(&g_options->forks[left]);
+	state_msg(philo, TAKEN_FORK);
 	pthread_mutex_lock(&philo->eating);
-	state_msg(philo, "is eating", philo->options->start_time);
 	philo->last_eat = get_time();
-	real_sleep(philo->options->time_to_eat);
+	state_msg(philo, EATING);
+	if (!g_options->finish)
+		ft_sleep(g_options->time_to_eat);
 	pthread_mutex_unlock(&philo->eating);
-	pthread_mutex_unlock(&philo->options->forks[philo->left]);
-	pthread_mutex_unlock(&philo->options->forks[philo->right]);
-	philo->options->forks_n[philo->left] = 0;
-	philo->options->forks_n[philo->right] = 0;
+	pthread_mutex_unlock(&g_options->forks[right]);
+	pthread_mutex_unlock(&g_options->forks[left]);
 }
 
-void	philo_routine(t_philo *philo)
+void	routine(t_philo *philo)
 {
 	int		eat_count;
 
 	eat_count = 0;
-	while (1)
+	philo->last_eat = get_time();
+	while (!g_options->finish)
 	{
 		eat(philo);
-		eat_count++;
-		if (eat_count == philo->options->max_eat)
+		if (g_options->finish)
+			return ;
+		if (++eat_count == g_options->max_eat)
 		{
-			philo->finished = 1;
-			philo->options->total_eat++;
+			g_options->total_eat++;
 			return ;
 		}
-		state_msg(philo, "is sleeping", philo->options->start_time);
-		real_sleep(philo->options->time_to_sleep);
-		state_msg(philo, "is thinking", philo->options->start_time);
+		state_msg(philo, SLEEPING);
+		ft_sleep(g_options->time_to_sleep);
+		state_msg(philo, THINKING);
 	}
 }

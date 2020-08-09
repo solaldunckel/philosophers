@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 12:46:01 by sdunckel          #+#    #+#              #
-#    Updated: 2020/05/07 23:15:30 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/08/06 18:24:58 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ NAME			= philo_one
 SRCS_LIST		= \
 					main.c \
 					routine.c \
-					utils.c \
 					parsing.c \
+					utils.c \
 					print_utils.c
 
 OBJS			= ${SRCS_LIST:.c=.o}

@@ -5,38 +5,49 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/06/08 19:17:43 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/06 18:21:04 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/06 18:50:19 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int		parse_params(t_options *options, char **argv)
+int		only_digit(char *str)
 {
-	options->philo_num = ft_atoi(argv[1]);
-	options->time_to_die = ft_atoi(argv[2]);
-	options->time_to_eat = ft_atoi(argv[3]);
-	options->time_to_sleep = ft_atoi(argv[4]);
-	if (argv[5])
-		options->max_eat = ft_atoi(argv[5]);
-	else
-		options->max_eat = 0;
-	if (options->philo_num < 1 || options->time_to_die < 1
-		|| options->max_eat < 0 || options->time_to_eat < 1
-		|| options->time_to_sleep < 1)
-		return (0);
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
 	return (1);
 }
 
-int		wrong_args(char *str, char **argv)
+int		init_params(char **argv, int argc, t_options *opt)
 {
-	ft_putstr(2, "error: ");
-	ft_putstr(2, str);
-	ft_putstr(2, "\nusage: ");
-	ft_putstr(2, argv[0]);
-	ft_putstr(2, " number_of_philosophers time_to_die time_to_eat time_to_sleep"
-		" [number_of_times_each_philosopher_must_eat]\n");
+	int i;
+
+	i = 1;
+	while (i < argc)
+	{
+		if (!only_digit(argv[i]))
+			return (PARSE_ERROR);
+		i++;
+	}
+	if ((opt->total_philo = ft_atoi(argv[1])) < 1)
+		return (PARSE_ERROR);
+	if ((opt->time_to_die = ft_atoi(argv[2])) < 1)
+		return (PARSE_ERROR);
+	if ((opt->time_to_eat = ft_atoi(argv[3])) < 1)
+		return (PARSE_ERROR);
+	if ((opt->time_to_sleep = ft_atoi(argv[4])) < 1)
+		return (PARSE_ERROR);
+	if (argv[5])
+		if ((opt->max_eat = ft_atoi(argv[5])) < 1)
+			return (PARSE_ERROR);
 	return (1);
 }
 
@@ -66,23 +77,21 @@ sem_t	*create_sem(char *str, int num, int pos)
 	return (sem);
 }
 
-int		create_philos(t_options *options)
+int		init_philos(t_options *opt)
 {
 	int		i;
 
-	i = -1;
-	if (!(options->philos = ft_calloc(options->philo_num * sizeof(t_philo))))
+	i = 0;
+	if (!(opt->philos = ft_calloc(sizeof(t_philo) * opt->total_philo)))
 		return (0);
-	options->forks = create_sem(S_FORK, options->philo_num, -1);
-	options->write = create_sem(S_WRITE, 1, -1);
-	options->picking = create_sem(S_PICK, 1, -1);
-	if (!options->forks || !options->write)
-		return (0);
-	while (++i < options->philo_num)
+	opt->forks = create_sem(S_FORK, opt->total_philo, -1);
+	opt->write = create_sem(S_WRITE, 1, -1);
+	opt->picking = create_sem(S_PICK, 1, -1);
+	while (i < opt->total_philo)
 	{
-		options->philos[i].eating = create_sem(S_EAT, 1, i);
-		options->philos[i].pos = i;
-		options->philos[i].options = options;
+		opt->philos[i].eating = create_sem(S_EAT, 1, i);
+		opt->philos[i].num = i;
+		i++;
 	}
 	return (1);
 }

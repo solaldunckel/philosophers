@@ -5,12 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/24 12:48:41 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/04/12 19:19:45 by sdunckel         ###   ########.fr       */
+/*   Created: 2020/08/05 16:12:30 by sdunckel          #+#    #+#             */
+/*   Updated: 2020/08/05 17:12:17 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	ft_sleep(int n)
+{
+	time_t start;
+
+	start = get_time();
+	while ((get_time() - start) < n)
+		usleep(100);
+}
 
 time_t	get_time(void)
 {
@@ -56,26 +65,12 @@ int		ft_atoi(const char *nptr)
 	return (negative ? -atoi : atoi);
 }
 
-void	ft_bzero(void *s, size_t n)
-{
-	size_t	i;
-	char	*st;
-
-	i = 0;
-	st = s;
-	while (i < n)
-	{
-		st[i] = 0;
-		i++;
-	}
-}
-
 void	*ft_calloc(size_t size)
 {
 	void	*mem;
 
 	if (!(mem = malloc(size)))
 		return (NULL);
-	ft_bzero(mem, size);
+	memset(mem, 0, size);
 	return (mem);
 }
