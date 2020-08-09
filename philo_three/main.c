@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/05 16:10:39 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/08/08 16:03:50 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/08/09 15:53:28 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	monitor(t_philo *philo)
 {
 	while (!g_options->finish)
 	{
+		usleep(2000);
 		sem_wait(philo->eating);
 		if (get_time() - philo->last_eat > g_options->time_to_die)
 		{
@@ -44,7 +45,6 @@ void	monitor(t_philo *philo)
 			break ;
 		}
 		sem_post(philo->eating);
-		usleep(1000);
 	}
 	exit(-1);
 }
@@ -61,7 +61,7 @@ int		start_threads(t_options *opt)
 		opt->philos[i].last_eat = get_time();
 		if (!(opt->philos[i].pid = fork()))
 			routine(&opt->philos[i]);
-		usleep(100);
+		usleep(50);
 	}
 	while (1)
 	{

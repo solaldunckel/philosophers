@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/06 18:22:50 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/08/06 19:32:53 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/08/09 15:46:48 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void	eat(t_philo *philo)
 	sem_wait(g_options->forks);
 	state_msg(philo, TAKEN_FORK);
 	sem_post(g_options->picking);
-	sem_wait(philo->eating);
 	philo->last_eat = get_time();
 	state_msg(philo, EATING);
+	sem_wait(philo->eating);
 	if (!g_options->finish)
 		ft_sleep(g_options->time_to_eat);
 	sem_post(philo->eating);

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/06 18:22:50 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/08/07 04:01:12 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/08/09 15:46:28 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	eat(t_philo *philo)
 	state_msg(philo, TAKEN_FORK);
 	pthread_mutex_lock(&g_options->forks[left]);
 	state_msg(philo, TAKEN_FORK);
-	pthread_mutex_lock(&philo->eating);
 	philo->last_eat = get_time();
 	state_msg(philo, EATING);
+	pthread_mutex_lock(&philo->eating);
 	if (!g_options->finish)
 		ft_sleep(g_options->time_to_eat);
 	pthread_mutex_unlock(&philo->eating);

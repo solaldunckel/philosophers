@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/05 16:12:30 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/08/05 17:12:17 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/08/09 16:18:58 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_sleep(int n)
 
 	start = get_time();
 	while ((get_time() - start) < n)
-		usleep(100);
+		usleep(200);
 }
 
 time_t	get_time(void)
