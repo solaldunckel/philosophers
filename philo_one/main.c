@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:43:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/08 00:09:07 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/08/05 20:28:41 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int		start_threads(t_options *options)
 		if (pthread_create(&philo->thr, NULL, (void*)philo_routine, philo))
 			return (0);
 		pthread_detach(philo->thr);
-		usleep(10);
+		usleep(100);
 		i++;
 	}
 	return (1);
@@ -40,11 +40,13 @@ void	destroy_all(t_options *options)
 	while (i < options->philo_num)
 	{
 		pthread_mutex_destroy(&options->forks[i]);
+		pthread_mutex_destroy(&options->philos[i].eating);
 		i++;
 	}
 	free(options->forks);
 	free(options->forks_n);
 	free(options->philos);
+	pthread_mutex_destroy(&options->dead);
 	pthread_mutex_destroy(&options->write);
 }
 
@@ -56,17 +58,21 @@ void	monitor(t_philo *philo)
 			break ;
 		if (philo->finished)
 			return ;
-		usleep(5000);
 		pthread_mutex_lock(&philo->eating);
 		if (get_time() - philo->last_eat > philo->options->time_to_die
 			&& !philo->options->finish)
 		{
 			philo->options->finish = 1;
 			state_msg2(philo, "is dead", philo->options->start_time);
+			pthread_mutex_unlock(&philo->options->dead);
+			return ;
 		}
 		pthread_mutex_unlock(&philo->eating);
+		// ft_putstr(1, "test\n");
+		usleep(1000);
 	}
 	philo->options->finish = 1;
+	pthread_mutex_unlock(&philo->options->dead);
 }
 
 void	start_monitor(t_philo *philo, int philo_num)
@@ -78,16 +84,12 @@ void	start_monitor(t_philo *philo, int philo_num)
 	{
 		if (pthread_create(&philo[i].monitor, NULL, (void*)monitor, &philo[i]))
 			return ;
-		usleep(10);
+		usleep(100);
 		i++;
 	}
-	i = 0;
-	while (i < philo_num)
-	{
-		pthread_join(philo[i].thr, NULL);
-		pthread_join(philo[i].monitor, NULL);
-		i++;
-	}
+	pthread_mutex_lock(&philo->options->dead);
+	pthread_mutex_lock(&philo->options->dead);
+	pthread_mutex_unlock(&philo->options->dead);
 }
 
 int		main(int argc, char **argv)

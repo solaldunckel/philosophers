@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/24 12:42:42 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/07 23:39:51 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/08/04 16:01:45 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct	s_options
 	int					finish;
 	int					total_eat;
 	pthread_mutex_t		write;
+	pthread_mutex_t		dead;
 	pthread_mutex_t		*forks;
 	int					*forks_n;
 	t_philo				*philos;

@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 17:18:15 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/05/07 22:05:51 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/08/04 16:01:37 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int		create_philos(t_options *options)
 	if (!(options->forks_n = ft_calloc(options->philo_num * sizeof(int))))
 		return (0);
 	pthread_mutex_init(&options->write, NULL);
+	pthread_mutex_init(&options->dead, NULL);
 	while (++i < options->philo_num)
 	{
 		pthread_mutex_init(&options->philos[i].eating, NULL);
