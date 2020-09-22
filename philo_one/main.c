@@ -6,7 +6,7 @@
 /*   By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/05 16:10:39 by sdunckel          #+#    #+#             */
-/*   Updated: 2020/08/09 15:53:40 by sdunckel         ###   ########.fr       */
+/*   Updated: 2020/09/22 22:31:11 by sdunckel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,40 @@ void	monitor(t_philo *philo)
 	}
 }
 
-int		start_threads(t_options *opt)
+int		start_philo_threads(t_options *opt)
 {
 	int	i;
 
 	opt->start_time = get_time();
-	i = -1;
-	while (++i < opt->total_philo)
+	i = 0;
+	while (i < opt->total_philo)
 	{
 		opt->philos[i].last_eat = get_time();
 		if (pthread_create(&opt->philos[i].thr, NULL, (void*)routine,
 			&opt->philos[i]))
 			return (0);
 		usleep(50);
+		i += 2;
 	}
+	i = 1;
+	while (i < opt->total_philo)
+	{
+		opt->philos[i].last_eat = get_time();
+		if (pthread_create(&opt->philos[i].thr, NULL, (void*)routine,
+			&opt->philos[i]))
+			return (0);
+		usleep(50);
+		i += 2;
+	}
+	return (1);
+}
+
+int		start_threads(t_options *opt)
+{
+	int	i;
+
+	if (!start_philo_threads(opt))
+		return (0);
 	i = -1;
 	while (++i < opt->total_philo)
 	{
